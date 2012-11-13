@@ -2,6 +2,97 @@ require 'spec_helper'
 
 describe MoviesController do
 
+  describe 'show movie controller' do 
+    before :each do
+      @fake_movie = mock('movie1', :id => '1', :title => 'movie1title')
+    end
+    it 'should call find()' do
+      Movie.should_receive(:find).with(@fake_movie.id)
+      get :show, {:id => @fake_movie.id}
+    end  
+  end
+  
+  describe 'index movie controller' do
+    it "sort movies by title" do
+      get :index, {:sort => 'title'}        
+      response.should be_redirect
+    end
+    it "sort movies by release date" do
+      get :index, {:sort => 'release_date'}        
+      response.should be_redirect
+    end
+    it "keep ordering movies by release date" do
+      session[:sort] = 'release_date'
+      get :index
+      response.should be_redirect
+    end
+    it "keep ordering movies by title" do
+      session[:sort] = 'title'
+      get :index
+      response.should be_redirect
+    end
+    it "keep selecting movies ratings" do
+      session[:ratings] = 'PG', 'G'
+      get :index
+      response.should be_redirect
+    end
+  end
+
+  describe 'create movie' do
+    before :each do
+      m = mock('movie1', :title => 'movie1title')
+      Movie.should_receive(:create!).and_return(m)
+    end 
+    it 'should call create!()' do
+      post :create, :movie => mock('movie1')
+    end
+    it 'should render the main page' do
+      post :create, :movie => mock('movie1')
+      response.should redirect_to(movies_path)
+    end
+  end
+  
+  describe 'edit movie' do
+    before :each do
+      @fake_movie = mock('movie1', :id => '1', :title => 'movie1title')
+    end
+    it 'should call find()' do
+      Movie.should_receive(:find).with(@fake_movie.id)
+      get :edit, {:id => @fake_movie.id}
+    end  
+  end
+  
+  describe 'update movie' do
+    before :each do
+      @fake_movie = mock('movie1', :id => '1', :title => 'movie1title')
+      @fake_rating = 'PG-15'
+      Movie.stub(:find).and_return(@fake_movie)
+      @fake_movie.should_receive(:update_attributes!).with("rating" => @fake_rating)
+    end 
+    it 'should call update_attributes!()' do
+      put :update, :id => @fake_movie.id, :movie => {:rating => @fake_rating}
+    end
+    it 'should render the Details page' do
+      put :update, :id => @fake_movie.id, :movie => {:rating => @fake_rating}
+      response.should redirect_to(movie_path(@fake_movie))
+    end 
+  end 
+  
+  describe 'delete movie' do
+    before :each do
+      @fake_movie = mock('movie1', :id => '1', :title => 'movie1title')
+      Movie.stub(:find).and_return(@fake_movie)
+      @fake_movie.should_receive(:destroy)
+    end 
+    it 'should call destroy()' do
+      delete :destroy, :id => @fake_movie.id
+    end
+    it 'should render the home page' do
+      delete :destroy, :id => @fake_movie.id
+      response.should redirect_to(movies_path)
+    end  
+  end
+
   describe 'searching movies' do  
     before :each do
       @fake_results = [mock('movie1'), mock('movie2')]
