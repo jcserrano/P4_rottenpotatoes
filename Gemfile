@@ -31,6 +31,7 @@ gem 'jquery-rails'
 
 gem 'haml'
 
+gem 'ruby-tmdb3'
 
 group :test do
   gem 'rspec-rails'

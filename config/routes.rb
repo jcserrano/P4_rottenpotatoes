@@ -15,6 +15,8 @@ Rottenpotatoes::Application.routes.draw do
   
   match 'movies/same_director', via: [:get]
   
+  post '/movies/search_tmdb'
+  
   resources :movies
   
   # map '/' to be a redirect to '/movies'

@@ -14,5 +14,27 @@ describe Movie do
       end
     end
   end
+  
+  describe 'searching Tmdb by keyword' do
+    context 'with valid key' do
+      it 'should call Tmdb with title keywords' do
+        TmdbMovie.should_receive(:find).with(hash_including :title => @fake_title)
+        Movie.find_in_tmdb(@fake_title)
+      end
+    end
+    context 'with invalid key' do
+      it 'should raise an InvalidKeyError with no API key' do
+        Movie.stub(:api_key).and_return('')
+        lambda { Movie.find_in_tmdb(@fake_title) }.
+          should raise_error(Movie::InvalidKeyError)
+      end
+      it 'should raise an InvalidKeyError with invalid API key' do
+        TmdbMovie.stub(:find).
+          and_raise(RuntimeError.new("API returned status code '404'"))
+        lambda { Movie.find_in_tmdb(@fake_title) }.
+          should raise_error(Movie::InvalidKeyError)
+      end
+    end
+  end 
     
 end

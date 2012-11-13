@@ -1,0 +1,28 @@
+%h1 Create New Movie
+
+= form_tag movies_path do
+
+  = label :movie, :title, 'Title'
+  = text_field :movie, 'title'
+  
+  = label :movie, :director, "Director"
+  - if !@movie.crew.nil? and !@movie.crew.empty?
+    - @movie.director = @movie.crew[0].name
+  = text_field :movie, :director
+
+  = label :movie, :rating, 'Rating'
+  = select :movie, :rating, ['G','PG','PG-13','R','NC-17']
+  
+  - if !@movie.release_date.nil?
+    - @movie.release_date = DateTime.parse(@movie.release_date)
+  = label :movie, :release_date, 'Released On'
+  = date_select :movie, :release_date
+
+  - @movie.description = @movie.overview
+  = label :movie, :description, 'Description'
+  = text_area :movie, 'description', :size => "40x20"
+  
+  %br
+  %br
+  = submit_tag 'Cancel'
+  = submit_tag 'Save Changes'
