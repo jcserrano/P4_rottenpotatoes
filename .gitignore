@@ -5,3 +5,17 @@ TAGS
 db/schema.rb
 log/
 db/*.sqlite3
+*.rbc*
+.sassc
+.sass-cache
+capybara-*.html
+.rspec
+/.bundle
+/vendor/bundle
+/log/*
+/tmp/*
+/public/system/*
+/spec/tmp/*
+**.orig
+rerun.txt
+pickle-email-*.html
