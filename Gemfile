@@ -33,6 +33,8 @@ gem 'haml'
 
 gem 'ruby-tmdb3'
 
+gem 'omniauth-twitter'
+
 group :test do
   gem 'rspec-rails'
   gem 'ZenTest' # autotest

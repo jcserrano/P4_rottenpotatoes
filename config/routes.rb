@@ -17,6 +17,10 @@ Rottenpotatoes::Application.routes.draw do
   
   post '/movies/search_tmdb'
   
+  match 'auth/:provider/callback' => 'sessions#create'
+  match '/logout' => 'sessions#destroy'
+  match '/login' => 'sessions#login'
+  
   resources :movies
   
   # map '/' to be a redirect to '/movies'
