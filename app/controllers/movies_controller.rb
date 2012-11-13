@@ -82,11 +82,16 @@ class MoviesController < ApplicationController
   end
   
   def search_tmdb
-    @movie = Movie.find_in_tmdb(params[:search_terms])
-    if @movie.nil? || @movie.empty?
-      flash[:warning] = "'#{params[:search_terms]}' was not found in TMDb."
+    begin
+      @movie = Movie.find_in_tmdb(params[:search_terms])
+      if @movie.nil? || @movie.empty?
+        flash[:warning] = "'#{params[:search_terms]}' was not found in TMDb."
+        redirect_to movies_path
+      end
+    rescue Movie::InvalidKeyError
+      flash[:warning] = "Search not available."
       redirect_to movies_path
-    end  
+    end 
   end
   
 end

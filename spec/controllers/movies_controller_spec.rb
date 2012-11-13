@@ -34,5 +34,47 @@ describe MoviesController do
       end     
     end
   end
+  
+  describe 'searching TMDb' do
+    before :each do
+      @fake_title = "title1"
+      @fake_results = [mock('movie1')]
+    end
+    it 'should call the model method that performs TMDb search' do
+      Movie.should_receive(:find_in_tmdb).with(@fake_title).
+        and_return(@fake_results)
+      post :search_tmdb, {:search_terms => @fake_title}
+    end
+    describe 'after valid search' do
+      before :each do
+        Movie.stub(:find_in_tmdb).and_return(@fake_results)
+        post :search_tmdb, {:search_terms => @fake_title}
+      end
+      it 'should select the Search Results template for rendering' do
+        response.should render_template('search_tmdb')
+      end
+      it 'should make the TMDb search results available to that template' do
+        assigns(:movie).should == @fake_results
+      end
+    end
+    describe 'after no valid search' do     
+      before :each do
+        Movie.stub(:find_in_tmdb)
+        post :search_tmdb, {:search_terms => @fake_title}
+      end
+      it 'should render the home page' do
+        response.should redirect_to(movies_path)
+      end     
+    end
+    describe 'raise Movie::InvalidKeyError' do
+      before :each do
+        Movie.stub(:find_in_tmdb).and_raise(Movie::InvalidKeyError)
+        post :search_tmdb, {:search_terms => @fake_title}
+      end
+      it 'should render the home page' do
+        response.should redirect_to(movies_path)
+      end  
+    end
+  end
    
 end

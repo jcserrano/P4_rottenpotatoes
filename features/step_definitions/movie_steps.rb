@@ -20,3 +20,7 @@ Then /the director of "(.*)" should be "(.*)"/ do |movie, director|
   step "I should be on the details page for \"#{movie}\""
   step "Then I should see \"Director:\" before \"#{director}\""
 end
+
+Then /it should raise Movie::InvalidKeyError/ do
+  lambda { Movie.find_in_tmdb('title') }.should raise_error(Movie::InvalidKeyError)
+end

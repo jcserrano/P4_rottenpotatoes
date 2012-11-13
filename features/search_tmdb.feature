@@ -24,3 +24,10 @@ Scenario: Try to add existing movie (happy path)
   And I should not see "'Inception' was not found in TMDb."
   And I press "Save Changes"
   And I should see "Inception"
+  
+Scenario: Searching Tmdb with invalid key
+  When I fill in "Search Terms" with "Inception"
+  And I press "Search TMDb"
+  Then it should raise Movie::InvalidKeyError
+  And I should be on the RottenPotatoes home page
+  And I should see "Search not available."
